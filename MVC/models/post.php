@@ -61,13 +61,8 @@ class Post {
         $modified=htmlspecialchars(strip_tags($modified));
         $image=htmlspecialchars(strip_tags($image));
         $tittle=htmlspecialchars(strip_tags($tittle));
- 
-        
-        
         
         $req = $db->prepare("INSERT INTO posts (author, content, created, modified, image, tittle) VALUES (:author,:content,:created,:modified,:image,:tittle);");
-        
-        
         
         // bind values 
         $req->bindParam(":author", $author);
@@ -79,7 +74,38 @@ class Post {
         $req->bindParam(":tittle", $tittle);
         
         $req -> execute();
-        
     }
+    public static function update($id,$author,$content,$created,$modified,$image,$tittle) {
+        $db = Db::getInstance();
+        $id = $_GET['id'];
+        $author = $_POST['author'];
+        $content = $_POST['content'];
+        $created = $_POST['created'];
+        $modified = $_POST['modified'];
+        $image = !empty($_FILES["image"]["name"])
+        ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"]) : "";
+        $tittle = $_POST['tittle'];
+        
+        $author=htmlspecialchars(strip_tags($author));
+        $content=htmlspecialchars(strip_tags($content));
+        $created=htmlspecialchars(strip_tags($created));
+        $modified=htmlspecialchars(strip_tags($modified));
+        $image=htmlspecialchars(strip_tags($image));
+        $tittle=htmlspecialchars(strip_tags($tittle));
+        
+        $req = $db->prepare("UPDATE posts SET author = :author, content = :content, created = :created, modified = :modified, image = :image, tittle = :tittle WHERE id = :id");
+        
+        $req->bindParam(":id", $id);
+        $req->bindParam(":author", $author);
+        $req->bindParam(":content", $content);
+        $req->bindParam(":created", $created);
+        $req->bindParam(":modified", $modified);
+        $req->bindParam(":created", $created);
+        $req->bindParam(":image", $image);
+        $req->bindParam(":tittle", $tittle);
+        
+        $req -> execute();
+    }
+        
 }
 ?>
